@@ -7,7 +7,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.github.dockerunit.annotation.impl.PortBindingExtensionInterpreter;
+import com.github.dockerunit.annotation.impl.PublishPortExtensionInterpreter;
 
 /**
  * Equivalent of {@literal -p} option in docker run.
@@ -15,19 +15,19 @@ import com.github.dockerunit.annotation.impl.PortBindingExtensionInterpreter;
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-@Repeatable(PortBindings.class)
-@ExtensionMarker(PortBindingExtensionInterpreter.class)
-public @interface PortBinding {
+@Repeatable(RepeatablePublishPort.class)
+@ExtensionMarker(PublishPortExtensionInterpreter.class)
+public @interface PublishPort {
 
     /**
      * @return the container port
      */
-    int exposedPort();
+    int container();
 
     /**
      * @return the host port where the container port is mapped
      */
-    int hostPort();
+    int host();
 
     /**
      * @return the transport protocol. Default is TCP

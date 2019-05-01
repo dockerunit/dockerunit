@@ -2,7 +2,7 @@ package com.github.dockerunit;
 
 import java.util.Set;
 
-import com.github.dockerunit.annotation.Named;
+import com.github.dockerunit.annotation.Svc;
 
 /**
  * Entry point including all the services used by the executing test.
@@ -20,8 +20,8 @@ public interface ServiceContext {
     public Set<Service> getServices();
 
     /**
-     * @param name the name of the requested service as declared in {@linkplain Named}
-     * @return the service specified by the provided name. Null if no such service has been declared.
+     * @param name the name of the requested svc as declared in {@linkplain Svc}
+     * @return the svc specified by the provided name. Null if no such svc has been declared.
      */
     public Service getService(String name);
 

@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface UsageDescriptor {
 
-    List<ServiceDescriptor> getDependencies();
+    List<ServiceDescriptor> getUsages();
     
 }

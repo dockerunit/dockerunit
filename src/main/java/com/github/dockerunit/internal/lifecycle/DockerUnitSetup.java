@@ -26,9 +26,9 @@ public class DockerUnitSetup {
     private final DiscoveryProvider discoveryProvider;
 
     public ServiceContext setup(UsageDescriptor descriptor) {
-        // Create containers and perform discovery one service at the time
+        // Create containers and perform discovery one svc at the time
         final AtomicBoolean failureOccured = new AtomicBoolean(false);
-        List<ServiceContext> serviceContexts = descriptor.getDependencies().stream()
+        List<ServiceContext> serviceContexts = descriptor.getUsages().stream()
                 .map(contextBuilder::buildServiceContext)
                 .map(ctx -> {
                     if (!ctx.checkStatus(Status.STARTED)) {
@@ -38,11 +38,11 @@ public class DockerUnitSetup {
                 }).map(ctx -> {
                     if (failureOccured.get()) {
                         logger.info(
-                                "Skipping discovery of service " + getServiceName(ctx) + " due to a previous failure.");
+                                "Skipping discovery of svc " + getServiceName(ctx) + " due to a previous failure.");
                         return abortService(ctx);
                     }
 
-                    logger.info("Performing discovery for service " + getServiceName(ctx));
+                    logger.info("Performing discovery for svc " + getServiceName(ctx));
                     ServiceContext postDiscoveryCtx = discoveryProvider.populateRegistry(ctx);
                     if (!postDiscoveryCtx.checkStatus(Status.DISCOVERED)) {
                         failureOccured.set(true);

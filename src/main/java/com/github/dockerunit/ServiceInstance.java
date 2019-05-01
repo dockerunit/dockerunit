@@ -1,6 +1,6 @@
 package com.github.dockerunit;
 
-import com.github.dockerunit.annotation.PortBinding;
+import com.github.dockerunit.annotation.PublishPort;
 import com.github.dockerunit.annotation.PublishPorts;
 import com.github.dockerunit.discovery.DiscoveryProvider;
 
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Wither;
 
 /**
- * Represents an instance of a discoverable service and wraps a Docker container.
+ * Represents an instance of a discoverable svc and wraps a Docker container.
  *
  * @see Service
  * @see ServiceContext
@@ -67,7 +67,7 @@ public class ServiceInstance {
     }
 
     /**
-     * Provides the ip of this service instance.
+     * Provides the ip of this svc instance.
      * Currently, the ip of the Docker bridge interface on your machine.
      * By default Dockerunit uses {@literal 172.17.42.1}.
      * You can override this by using the {@literal -Ddocker.bridge.ip} system property.
@@ -76,7 +76,7 @@ public class ServiceInstance {
      * mvn test -Ddocker.bridge.ip=172.17.0.1
      * </pre>
      *
-     * @return the ip of the service instance.
+     * @return the ip of the svc instance.
      */
     public String getIp() {
         return ip;
@@ -84,8 +84,8 @@ public class ServiceInstance {
 
     /**
      * Provides the port this instance is listening on.
-     * If you are running a single instance and you are using {@linkplain PortBinding},
-     * then this returns the value of the {@literal hostPort} property.
+     * If you are running a single instance and you are using {@linkplain PublishPort},
+     * then this returns the value of the {@literal host} property.
      * If you are running multiple instances, then you need to use {@linkplain PublishPorts}.
      * In this case, this return the port that Docker has dynamically assigned
      * to the underlying container.

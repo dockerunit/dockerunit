@@ -1,5 +1,11 @@
 package com.github.dockerunit.internal.reflect;
 
+import com.github.dockerjava.api.command.CreateContainerCmd;
+import com.github.dockerunit.annotation.*;
+import com.github.dockerunit.internal.ServiceDescriptor;
+import com.github.dockerunit.internal.UsageDescriptor;
+import org.junit.runners.model.FrameworkMethod;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -10,19 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerunit.annotation.ContainerBuilder;
-import com.github.dockerunit.annotation.ExtensionMarker;
-import com.github.dockerunit.annotation.Image;
-import com.github.dockerunit.annotation.Named;
-import com.github.dockerunit.annotation.Usages;
-import com.github.dockerunit.annotation.Use;
-import com.github.dockerunit.internal.ServiceDescriptor;
-import com.github.dockerunit.internal.UsageDescriptor;
-import com.github.dockerunit.internal.reflect.DefaultTestDescriptor.DefaultTestDescriptorBuilder;
-import org.junit.runners.model.*;
-
-public class DefaultDependencyDescriptorBuilder implements UsageDescriptorBuilder {
+public class DefaultUsageDescriptorBuilder implements UsageDescriptorBuilder {
 
     @Override
     public UsageDescriptor buildDescriptor(FrameworkMethod method) {
@@ -35,34 +29,33 @@ public class DefaultDependencyDescriptorBuilder implements UsageDescriptorBuilde
     }
 
     private UsageDescriptor buildDescriptor(AnnotatedElement element) {
-        List<Use> requirements = getDependencies(element);
+        List<WithSvc> requirements = getWithSvcUsages(element);
         List<ServiceDescriptor> descriptors = asDescriptors(requirements);
-        return new DefaultDependencyDescriptor(descriptors);
+        return new DefaultUsageDescriptor(descriptors);
     }
 
-    private List<ServiceDescriptor> asDescriptors(List<Use> requirements) {
+    private List<ServiceDescriptor> asDescriptors(List<WithSvc> requirements) {
         List<ServiceDescriptor> descriptors = requirements.stream()
                 .map(this::buildDescriptor)
                 .collect(Collectors.toList());
         return descriptors;
     }
 
-    private ServiceDescriptor buildDescriptor(Use use) {
-        DefaultTestDescriptorBuilder builder = DefaultTestDescriptor.builder();
+    private ServiceDescriptor buildDescriptor(WithSvc withSvc) {
+        DefaultServiceDescriptor.DefaultServiceDescriptorBuilder builder = DefaultServiceDescriptor.builder();
 
-        checkServiceClass(use.service());
+        checkServiceClass(withSvc.svc());
         try {
-            builder.instance(use.service().newInstance());
+            builder.instance(withSvc.svc().newInstance());
         } catch (Exception e) {
-            throw new RuntimeException("Cannot instantiate service class " + use.service().getName());
+            throw new RuntimeException("Cannot instantiate svc class " + withSvc.svc().getName());
         }
-        builder.replicas(extractReplicas(use))
-                .order(use.order())
-                .containerName(use.containerPrefix())
-                .image(findImage(use.service()))
-                .named(findNamed(use.service()))
-                .customisationHook(findCustomisationHook(use))
-                .options(extractOptions(use.service()));
+        builder.replicas(extractReplicas(withSvc))
+                .priority(withSvc.priority())
+                .containerName(withSvc.containerNamePrefix())
+                .svcDefinition(findSvc(withSvc.svc()))
+                .customisationHook(findCustomisationHook(withSvc))
+                .options(extractOptions(withSvc.svc()));
         return builder.build();
     }
 
@@ -127,8 +120,8 @@ public class DefaultDependencyDescriptorBuilder implements UsageDescriptorBuilde
                 .findFirst();
     }
 
-    private Method findCustomisationHook(Use use) {
-        Optional<Method> opt = Arrays.asList(use.service().getDeclaredMethods()).stream()
+    private Method findCustomisationHook(WithSvc withSvc) {
+        Optional<Method> opt = Arrays.asList(withSvc.svc().getDeclaredMethods()).stream()
                 .filter(m -> m.isAnnotationPresent(ContainerBuilder.class)
                         && Modifier.isPublic(m.getModifiers())
                         && !Modifier.isStatic(m.getModifiers())
@@ -139,11 +132,11 @@ public class DefaultDependencyDescriptorBuilder implements UsageDescriptorBuilde
         return opt.orElse(null);
     }
 
-    private int extractReplicas(Use use) {
-        if (use.replicas() < 1) {
+    private int extractReplicas(WithSvc withSvc) {
+        if (withSvc.replicas() < 1) {
             throw new RuntimeException("Cannot require less than one replica");
         }
-        return use.replicas();
+        return withSvc.replicas();
     }
 
     private <T extends Annotation> T findRequiredAnnotation(Class<?> service, Class<T> annotationType) {
@@ -154,21 +147,17 @@ public class DefaultDependencyDescriptorBuilder implements UsageDescriptorBuilde
         return service.getAnnotation(annotationType);
     }
 
-    private Image findImage(Class<?> service) {
-        return findRequiredAnnotation(service, Image.class);
+    private Svc findSvc(Class<?> service) {
+        return findRequiredAnnotation(service, Svc.class);
     }
 
-    private Named findNamed(Class<?> service) {
-        return findRequiredAnnotation(service, Named.class);
-    }
-
-    private List<Use> getDependencies(AnnotatedElement element) {
-        Use[] requirements = element.isAnnotationPresent(Usages.class)
-                ? element.getAnnotation(Usages.class)
+    private List<WithSvc> getWithSvcUsages(AnnotatedElement element) {
+        WithSvc[] requirements = element.isAnnotationPresent(RepeatableWithSvc.class)
+                ? element.getAnnotation(RepeatableWithSvc.class)
                 .value()
-                : new Use[] {};
-        if (requirements.length == 0 && element.isAnnotationPresent(Use.class)) {
-            requirements = new Use[] { element.getAnnotation(Use.class) };
+                : new WithSvc[] {};
+        if (requirements.length == 0 && element.isAnnotationPresent(WithSvc.class)) {
+            requirements = new WithSvc[] { element.getAnnotation(WithSvc.class) };
         }
         return Arrays.asList(requirements);
     }

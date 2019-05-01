@@ -8,6 +8,7 @@ import java.util.ServiceLoader;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
+import com.github.dockerunit.annotation.WithSvc;
 import com.github.dockerunit.discovery.DiscoveryProvider;
 import com.github.dockerunit.discovery.DiscoveryProviderFactory;
 import com.github.dockerunit.exception.ConfigException;
@@ -22,7 +23,6 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import com.github.dockerunit.ServiceInstance.Status;
-import com.github.dockerunit.annotation.Use;
 import com.github.dockerunit.internal.ServiceContextBuilder;
 
 public class DockerUnitRule implements TestRule {
@@ -56,7 +56,7 @@ public class DockerUnitRule implements TestRule {
 
     /**
      * Returns the default {@link ServiceContext} or a random one if all the current instances of {@link DockerUnitRule}
-     * have been initialised with a specific service context name.
+     * have been initialised with a specific svc context name.
      *
      * @return the default{@link ServiceContext}
      */
@@ -66,7 +66,7 @@ public class DockerUnitRule implements TestRule {
                         activeContexts.values().stream().findAny()
                                 .orElseThrow(() -> new ConfigException("No active context detected. "
                                         + "Please make sure that you have declared at least one @"
-                                        + Use.class.getSimpleName()
+                                        + WithSvc.class.getSimpleName()
                                         + " annotation on tha class that declares your "
                                         + DockerUnitRule.class.getSimpleName()
                                         + " instance.")));
@@ -100,7 +100,7 @@ public class DockerUnitRule implements TestRule {
             @Override
             public void evaluate() throws Throwable {
 
-                logger.info("Performing service discovery for the following context: " + description.getDisplayName());
+                logger.info("Performing svc discovery for the following context: " + description.getDisplayName());
                 try {
                     doSetup(description);
                     runTest(base);

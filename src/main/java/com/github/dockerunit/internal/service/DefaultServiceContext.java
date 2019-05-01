@@ -77,7 +77,7 @@ public class DefaultServiceContext implements ServiceContext {
     public String getFormattedErrors() {
         List<Service> orderedServices = services.values().stream()
                 .collect(Collectors.toList());
-        orderedServices.sort((a, b) -> a.getDescriptor().getOrder() < b.getDescriptor().getOrder() ? -1 : 1);
+        orderedServices.sort((a, b) -> a.getDescriptor().getPriority() < b.getDescriptor().getPriority() ? -1 : 1);
 
         return orderedServices.stream()
                 .map(s -> "\nService: " + s.getName()

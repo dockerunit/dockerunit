@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 import com.github.dockerunit.annotation.impl.EnvExtensionInterpreter;
 
 /**
- * Allows declaration of environment variables for your service.
- * Declared values will be passed to every instance of your service.
+ * Allows declaration of environment variables for your svc.
+ * Declared values will be passed to every instance of your svc.
  * <p>
  * The example below set variables FOO and BAR to values foo and bar respectively.
  *
