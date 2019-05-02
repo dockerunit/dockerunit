@@ -41,7 +41,7 @@ public @interface WithSvc {
      * <p>
      * If not set, Docker random names will be used.
      * If set and replicas has been set to 1, the actual value will be the container name.
-     * If set and replicas has been set to more than 1, containers will be svcDefinition as value + "1", value + "2", ...
+     * If set and replicas has been set to more than 1, containers will be named as value + "1", value + "2", ...
      *
      * @return the value to set as name prefix for containers instantiated for this svc.
      */

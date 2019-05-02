@@ -21,4 +21,8 @@ public class DefaultServiceDescriptor implements ServiceDescriptor {
     private String containerName;
     private Object instance;
 
+    @Override
+    public String getName() {
+        return svcDefinition.value().length() > 0 ? svcDefinition.value() : svcDefinition.name();
+    }
 }

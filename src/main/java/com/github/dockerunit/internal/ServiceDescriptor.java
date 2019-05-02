@@ -9,7 +9,9 @@ import java.util.List;
 public interface ServiceDescriptor {
 
     Svc getSvcDefinition();
-    
+
+    String getName();
+
     List<? extends Annotation> getOptions();
     
     Method getCustomisationHook();
