@@ -1,16 +1,14 @@
 package com.github.dockerunit;
 
+import com.github.dockerunit.annotation.Svc;
+import com.github.dockerunit.discovery.DiscoveryProvider;
+import com.github.dockerunit.internal.ServiceDescriptor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.Wither;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.github.dockerunit.annotation.Image;
-import com.github.dockerunit.annotation.Named;
-import com.github.dockerunit.discovery.DiscoveryProvider;
-import com.github.dockerunit.internal.ServiceDescriptor;
-
-import lombok.AllArgsConstructor;
-import lombok.experimental.Wither;
 
 /**
  * Represents a discoverable container or group of Docker containers.
@@ -19,11 +17,10 @@ import lombok.experimental.Wither;
  * It has at least one instance (container) and it is healthy if and only
  * if all its instances are healthy.
  * <p>
- * The service name is used to instruct the {@link DiscoveryProvider} and
- * make the service discoverable by  other services.
+ * The svc name is used to instruct the {@link DiscoveryProvider} and
+ * make the svc discoverable by  other services.
  *
- * @see Image
- * @see Named
+ * @see Svc
  */
 @Wither
 @AllArgsConstructor
@@ -43,10 +40,10 @@ public class Service {
     }
 
     /**
-     * Checks whether all the {@link ServiceInstance}s in this service are in the specified {@link ServiceInstance.Status}.
+     * Checks whether all the {@link ServiceInstance}s in this svc are in the specified {@link ServiceInstance.Status}.
      *
      * @param status the {@link ServiceInstance.Status} to check
-     * @return true if all the {@link ServiceInstance}s in this service are in the specified status, false otherwise.
+     * @return true if all the {@link ServiceInstance}s in this svc are in the specified status, false otherwise.
      */
     public boolean checkStatus(ServiceInstance.Status status) {
         return instances.stream()
@@ -54,14 +51,14 @@ public class Service {
     }
 
     /**
-     * @return the service name as declared in {@linkplain Named}
+     * @return the svc name as declared in {@linkplain Svc}
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * @return the set of instances (containers) for this service.
+     * @return the set of instances (containers) for this svc.
      * @see ServiceInstance
      */
     public Set<ServiceInstance> getInstances() {
@@ -69,7 +66,7 @@ public class Service {
     }
 
     /**
-     * @return the descriptor of this service that provides the runtime representation of the annotation based
+     * @return the descriptor of this svc that provides the runtime representation of the annotation based
      * configuration that has been used.
      */
     public ServiceDescriptor getDescriptor() {

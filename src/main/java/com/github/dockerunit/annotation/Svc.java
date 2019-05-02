@@ -6,12 +6,29 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.github.dockerunit.Service;
+
 /**
- * Sets the image that must be used to instantiate containers for this service.
+ * Sets the name and image for this {@linkplain Service}
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface Image {
+public @interface Svc {
+
+    /**
+     *
+     * If defined, it overwrites name().
+     *
+     * @return the name to use for this svc.
+     */
+    String value() default "";
+
+
+    /**
+     *
+     * @return the name to use for this svc
+     */
+    String name();
 
     /**
      * The name of the image. It can contain a registry.
@@ -20,7 +37,7 @@ public @interface Image {
      *
      * @return the name of the image
      */
-    String value();
+    String image();
 
     /**
      * Instructs Dockerunit about when to pull the specified image.
@@ -40,4 +57,5 @@ public @interface Image {
          */
         IF_ABSENT
     }
+
 }

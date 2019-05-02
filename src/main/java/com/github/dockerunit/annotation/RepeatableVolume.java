@@ -14,7 +14,7 @@ import com.github.dockerunit.annotation.impl.VolumeWrapperExtensionInterpreter;
 @Retention(RUNTIME)
 @Target(TYPE)
 @ExtensionMarker(VolumeWrapperExtensionInterpreter.class)
-public @interface Volumes {
+public @interface RepeatableVolume {
 
     Volume[] value();
 

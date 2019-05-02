@@ -8,13 +8,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Wrapper annotation for repeated use of {@linkplain Use}
+ * Wrapper annotation for repeated use of {@linkplain WithSvc}
  * on a class or a method
  */
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })
-public @interface Usages {
+public @interface RepeatableWithSvc {
 
-    Use[] value();
+    WithSvc[] value();
 
 }

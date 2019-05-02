@@ -1,18 +1,17 @@
 package com.github.dockerunit.internal;
 
+import com.github.dockerunit.annotation.Svc;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import com.github.dockerunit.annotation.Image;
-import com.github.dockerunit.annotation.Named;
-
 public interface ServiceDescriptor {
 
-    Image getImage();
-    
-    Named getNamed();
-    
+    Svc getSvcDefinition();
+
+    String getSvcName();
+
     List<? extends Annotation> getOptions();
     
     Method getCustomisationHook();
@@ -23,6 +22,6 @@ public interface ServiceDescriptor {
     
     int getReplicas();
     
-    int getOrder();
+    int getPriority();
     
 }

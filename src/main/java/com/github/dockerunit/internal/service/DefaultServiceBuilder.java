@@ -1,27 +1,8 @@
 package com.github.dockerunit.internal.service;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.ListImagesCmd;
-import com.github.dockerjava.api.command.PullImageCmd;
-import com.github.dockerjava.api.command.RemoveContainerCmd;
-import com.github.dockerjava.api.command.StartContainerCmd;
+import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.PullResponseItem;
@@ -31,10 +12,20 @@ import com.github.dockerunit.ServiceInstance.Status;
 import com.github.dockerunit.annotation.ContainerBuilder;
 import com.github.dockerunit.annotation.ExtensionInterpreter;
 import com.github.dockerunit.annotation.ExtensionMarker;
-import com.github.dockerunit.annotation.Image.PullStrategy;
+import com.github.dockerunit.annotation.Svc;
 import com.github.dockerunit.exception.ContainerException;
 import com.github.dockerunit.internal.ServiceBuilder;
 import com.github.dockerunit.internal.ServiceDescriptor;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class DefaultServiceBuilder implements ServiceBuilder {
 
@@ -46,8 +37,7 @@ public class DefaultServiceBuilder implements ServiceBuilder {
         for (int i = 0; i < descriptor.getReplicas(); i++) {
             instances.add(createInstance(descriptor, client, i));
         }
-        return new Service(descriptor.getNamed()
-                .value(), instances, descriptor);
+        return new Service(descriptor.getSvcName(), instances, descriptor);
     }
 
     private ServiceInstance createInstance(ServiceDescriptor descriptor, DockerClient client, int i) {
@@ -56,13 +46,13 @@ public class DefaultServiceBuilder implements ServiceBuilder {
         String statusDetails = null;
         CreateContainerCmd cmd = null;
         try {
-            cmd = client.createContainerCmd(descriptor.getImage().value());
+            cmd = client.createContainerCmd(descriptor.getSvcDefinition().image());
             cmd = computeContainerName(descriptor, i, cmd);
             cmd = executeOptionBuilders(descriptor, cmd);
             if (descriptor.getCustomisationHook() != null) {
                 cmd = executeCustomisationHook(descriptor.getCustomisationHook(), descriptor.getInstance(), cmd);
             }
-            containerId = createAndStartContainer(cmd, descriptor.getImage().pull(), client);
+            containerId = createAndStartContainer(cmd, descriptor.getSvcDefinition().pull(), client);
             status = Status.STARTED;
             statusDetails = "Started.";
         } catch (Throwable t) {
@@ -97,7 +87,7 @@ public class DefaultServiceBuilder implements ServiceBuilder {
         return cmd;
     }
 
-    private String createAndStartContainer(CreateContainerCmd cmd, PullStrategy pullStrategy, DockerClient client) {
+    private String createAndStartContainer(CreateContainerCmd cmd, Svc.PullStrategy pullStrategy, DockerClient client) {
         CompletableFuture<String> respFut = new CompletableFuture<>();
         CompletableFuture<Void> pullFut;
 
@@ -105,7 +95,7 @@ public class DefaultServiceBuilder implements ServiceBuilder {
 
         Optional<Image> image = findImage(imageName, client);
 
-        if (!image.isPresent() || pullStrategy.equals(PullStrategy.ALWAYS)) {
+        if (!image.isPresent() || pullStrategy.equals(Svc.PullStrategy.ALWAYS)) {
             pullFut = pullImage(imageName, client);
         } else {
             pullFut = CompletableFuture.completedFuture(null);
@@ -213,7 +203,7 @@ public class DefaultServiceBuilder implements ServiceBuilder {
         } catch (Exception e) {
             throw new RuntimeException(
                     "An error occurred while executing a method marked with @" + ContainerBuilder.class.getSimpleName()
-                            + ", named "
+                            + ", svcDefinition "
                             + customisationHook.getName() + " and declared in class " + instance.getClass()
                             .getName(),
                     e);
