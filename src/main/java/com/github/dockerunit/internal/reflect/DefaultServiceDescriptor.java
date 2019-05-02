@@ -22,7 +22,7 @@ public class DefaultServiceDescriptor implements ServiceDescriptor {
     private Object instance;
 
     @Override
-    public String getName() {
+    public String getSvcName() {
         return svcDefinition.value().length() > 0 ? svcDefinition.value() : svcDefinition.name();
     }
 }

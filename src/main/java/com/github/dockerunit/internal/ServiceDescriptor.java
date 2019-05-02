@@ -10,7 +10,7 @@ public interface ServiceDescriptor {
 
     Svc getSvcDefinition();
 
-    String getName();
+    String getSvcName();
 
     List<? extends Annotation> getOptions();
     

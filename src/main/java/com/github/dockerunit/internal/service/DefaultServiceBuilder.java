@@ -37,7 +37,7 @@ public class DefaultServiceBuilder implements ServiceBuilder {
         for (int i = 0; i < descriptor.getReplicas(); i++) {
             instances.add(createInstance(descriptor, client, i));
         }
-        return new Service(descriptor.getName(), instances, descriptor);
+        return new Service(descriptor.getSvcName(), instances, descriptor);
     }
 
     private ServiceInstance createInstance(ServiceDescriptor descriptor, DockerClient client, int i) {
