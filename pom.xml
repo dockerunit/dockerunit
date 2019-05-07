@@ -31,7 +31,6 @@
   </developers>
 
   <properties>
-    <junit.version>4.12</junit.version>
     <dockerjava.version>3.1.1</dockerjava.version>
     <lombok.version>1.16.6</lombok.version>
   </properties>
@@ -44,11 +43,6 @@
   </licenses>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java</artifactId>
