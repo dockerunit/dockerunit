@@ -31,7 +31,7 @@
   </developers>
 
   <properties>
-    <dockerjava.version>3.1.1</dockerjava.version>
+    <dockerjava.version>3.1.2</dockerjava.version>
     <lombok.version>1.16.6</lombok.version>
   </properties>
 
