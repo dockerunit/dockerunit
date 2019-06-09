@@ -32,7 +32,7 @@
 
   <properties>
     <dockerjava.version>3.1.1</dockerjava.version>
-    <lombok.version>1.16.6</lombok.version>
+    <lombok.version>1.18.8</lombok.version>
   </properties>
 
   <licenses>
