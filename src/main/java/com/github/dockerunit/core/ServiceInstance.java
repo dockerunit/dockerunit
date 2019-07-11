@@ -19,8 +19,9 @@ import lombok.With;
 public class ServiceInstance {
 
     private final String containerName;
-    private final String gatewayIp;
-    private final int port;
+    private final String gatewayAddress;
+    private final int gatewayPort;
+    private final int containerPort;
 
     private String containerIp;
     private String containerId;
@@ -68,8 +69,7 @@ public class ServiceInstance {
     }
 
     /**
-     * Provides the ip of the gateway to reach this svc instance.
-     * Currently, the ip of the Docker bridge interface on your machine.
+     * Provides the ip or host name of the gateway to reach this svc instance.
      * By default Dockerunit uses {@literal 172.17.42.1}.
      * You can override this by using the {@literal -Ddocker.bridge.ip} system property.
      *
@@ -79,22 +79,23 @@ public class ServiceInstance {
      *
      * @return the ip of the gateway to reach the svc instance.
      */
-    public String getGatewayIp() {
-        return gatewayIp;
+    public String getGatewayAddress() {
+        return gatewayAddress;
     }
 
     /**
-     * Provides the port this instance is listening on.
+     * Provides the gateway level port this instance is listening on.
      * If you are running a single instance and you are using {@linkplain PublishPort},
      * then this returns the value of the {@literal host} property.
-     * If you are running multiple instances, then you need to use {@linkplain PublishPorts}.
-     * In this case, this return the port that Docker has dynamically assigned
-     * to the underlying container.
+     * If you are running multiple instances, then you need to use {@linkplain PublishPorts}
+     * otherwise Docker will detect a port conflict and fail to start the corresponding container.
+     * If neither {@linkplain PublishPort} nor {@linkplain PublishPorts} has been used, this returns 0.
      *
-     * @return the port this instance is listening on.
+     *
+     * @return the gateway level port this instance is listening on.
      */
-    public int getPort() {
-        return port;
+    public int getGatewayPort() {
+        return gatewayPort;
     }
 
     /**
@@ -110,6 +111,15 @@ public class ServiceInstance {
      */
     public String getContainerIp() {
         return containerIp;
+    }
+
+    /**
+     *
+     * @return the exposed port of the underlying container. If the container exposes multiple ports,
+     * this returns the one that is used by the health-check definition.
+     */
+    public int getContainerPort() {
+        return containerPort;
     }
 
     /**
