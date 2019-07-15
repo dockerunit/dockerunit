@@ -1,0 +1,96 @@
+version: 2.1
+
+# -----------------------------------------------------------------------------
+# YAML Anchors
+# -----------------------------------------------------------------------------
+
+_anchors:
+  - &mvn-cache-key          core-{{ .Branch }}-{{ checksum "pom.xml" }}
+  - &mvn-cache-key-fallback core-{{ .Branch }}
+
+  - &build-image circleci/openjdk:8u212-jdk-stretch
+
+  - &default-env
+    MAVEN_CONFIG_DIR: .circleci/mvn
+
+# -----------------------------------------------------------------------------
+# Jobs
+# -----------------------------------------------------------------------------
+
+jobs:
+
+  # jobs: build ---------------------------------------------------------------
+
+  build:
+    docker: [ image: *build-image ]
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys: [ *mvn-cache-key, *mvn-cache-key-fallback ]
+
+      - run: mvn verify
+
+      - save_cache:
+          paths: [ ~/.m2 ]
+          key: *mvn-cache-key
+
+  # jobs: deploy --------------------------------------------------------------
+
+  deploy:
+    docker: [ image: *build-image ]
+    steps:
+      - checkout
+
+      - run:
+          name: Install GPG signing keys
+          environment:
+            <<: *default-env
+            GPG_KEY_FILENAME: codesigning.asc
+          command: |
+            openssl aes-256-cbc -d -a -in ${MAVEN_CONFIG_DIR}/${GPG_KEY_FILENAME}.enc -out ${MAVEN_CONFIG_DIR}/${GPG_KEY_FILENAME} -k "${ENCRYPTION_KEY}"
+            gpg --batch --fast-import ${MAVEN_CONFIG_DIR}/${GPG_KEY_FILENAME}
+
+      - restore_cache:
+          keys: [ *mvn-cache-key, *mvn-cache-key-fallback ]
+
+      - run:
+          name: mvn deploy
+          environment:
+            <<: *default-env
+          command: |
+            export GPG_TTY=$(tty)
+            mvn -B -s ${MAVEN_CONFIG_DIR}/settings.xml -Dstyle.color=always -Dmaven.install.skip deploy
+
+      - save_cache:
+          paths: [ ~/.m2 ]
+          key: *mvn-cache-key
+
+
+# -----------------------------------------------------------------------------
+# Workflows
+# -----------------------------------------------------------------------------
+
+workflows:
+
+  version: 2
+
+  # workflow: pr-check --------------------------------------------------------
+
+  pr-check:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: master
+
+  # workflow: master ----------------------------------------------------------
+
+  deploy:
+    jobs:
+      - deploy:
+          context: ossrh
+          filters:
+            branches:
+              only: master
+
