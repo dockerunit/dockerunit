@@ -83,6 +83,17 @@ public class ServiceInstance {
         return gatewayAddress;
     }
 
+
+    /**
+     * @deprecated use the {@link #getGatewayAddress()} method instead.
+     *
+     * @return the ip of the gateway to reach the svc instance.
+     */
+    public String getIp() {
+        return getGatewayAddress();
+    }
+
+
     /**
      * Provides the gateway level port this instance is listening on.
      * If you are running a single instance and you are using {@linkplain PublishPort},
@@ -96,6 +107,16 @@ public class ServiceInstance {
      */
     public int getGatewayPort() {
         return gatewayPort;
+    }
+
+
+    /**
+     * @deprecated use the {@link #getGatewayPort()} method instead.
+     *
+     * @return the gateway level port this instance is listening on.
+     */
+    public int getPort() {
+        return getGatewayPort();
     }
 
     /**
