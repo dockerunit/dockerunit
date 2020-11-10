@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.github.dockerunit</groupId>
     <artifactId>dockerunit-parent</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <relativePath/>
   </parent>
 
@@ -23,7 +23,7 @@
   </scm>
 
   <properties>
-    <lombok.version>1.18.8</lombok.version>
+    <lombok.version>1.18.16</lombok.version>
     <docker-java.version>3.1.5</docker-java.version>
   </properties>
 
