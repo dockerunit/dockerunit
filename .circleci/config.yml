@@ -8,7 +8,7 @@ _anchors:
   - &mvn-cache-key          core-{{ .Branch }}-{{ checksum "pom.xml" }}
   - &mvn-cache-key-fallback core-{{ .Branch }}
 
-  - &build-image circleci/openjdk:8u212-jdk-stretch
+  - &build-image cimg/openjdk:8.0
 
   - &default-env
     MAVEN_CONFIG_DIR: .circleci/mvn
