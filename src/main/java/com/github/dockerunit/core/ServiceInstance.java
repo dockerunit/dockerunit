@@ -3,10 +3,9 @@ package com.github.dockerunit.core;
 import com.github.dockerunit.core.annotation.PublishPort;
 import com.github.dockerunit.core.annotation.PublishPorts;
 import com.github.dockerunit.core.discovery.DiscoveryProvider;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Wither;
+import lombok.With;
 
 /**
  * Represents an instance of a discoverable svc and wraps a Docker container.
@@ -15,7 +14,7 @@ import lombok.experimental.Wither;
  * @see ServiceContext
  */
 @Builder
-@Wither
+@With
 @EqualsAndHashCode(of = { "containerId" })
 public class ServiceInstance {
 

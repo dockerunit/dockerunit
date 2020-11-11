@@ -4,6 +4,7 @@ import com.github.dockerunit.core.annotation.Svc;
 import com.github.dockerunit.core.discovery.DiscoveryProvider;
 import com.github.dockerunit.core.internal.ServiceDescriptor;
 import lombok.AllArgsConstructor;
+import lombok.With;
 import lombok.experimental.Wither;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  *
  * @see Svc
  */
-@Wither
+@With
 @AllArgsConstructor
 public class Service {
 
