@@ -1,7 +1,9 @@
 package com.github.dockerunit.core.internal.docker;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.DockerClientConfig;
 
 public class DefaultDockerClientProvider implements DockerClientProvider {
 
@@ -11,7 +13,10 @@ public class DefaultDockerClientProvider implements DockerClientProvider {
 
     public DefaultDockerClientProvider() {
         String dockerServerUrl = System.getProperty(DOCKER_SERVER_URL, DOCKER_SOCKET);
-        client = DockerClientBuilder.getInstance(dockerServerUrl).build();
+        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost(dockerServerUrl)
+                .build();
+        client = DockerClientBuilder.getInstance(config).build();
     }
 
     @Override
