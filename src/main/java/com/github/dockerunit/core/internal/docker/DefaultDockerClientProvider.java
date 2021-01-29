@@ -15,6 +15,7 @@ public class DefaultDockerClientProvider implements DockerClientProvider {
         String dockerServerUrl = System.getProperty(DOCKER_SERVER_URL, DOCKER_SOCKET);
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost(dockerServerUrl)
+                .withApiVersion("1.40")
                 .build();
         client = DockerClientBuilder.getInstance(config).build();
     }
