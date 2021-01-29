@@ -5,7 +5,9 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.Image;
+import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.PullResponseItem;
+import com.github.dockerjava.api.model.Version;
 import com.github.dockerunit.core.Service;
 import com.github.dockerunit.core.ServiceInstance;
 import com.github.dockerunit.core.ServiceInstance.Status;
@@ -24,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -133,14 +136,13 @@ public class DefaultServiceBuilder implements ServiceBuilder {
     }
 
     private Optional<Image> findImage(String imageName, DockerClient client) {
-        ListImagesCmd imagesCmd = client.listImagesCmd().withImageNameFilter(imageName);
-        List<Image> imagesList = imagesCmd.exec();
-        if (imagesList == null || imagesList.isEmpty()) {
-            return Optional.empty();
-        }
+        ListImagesCmd listImages = client.listImagesCmd();
 
-        return imagesList.stream()
-                .findFirst();
+        listImages.getFilters().put("reference", Collections.singletonList(imageName));
+
+        return Optional.ofNullable(listImages.exec())
+                .filter(images -> !images.isEmpty())
+                .map(images -> images.get(0));
     }
 
     private CompletableFuture<Void> pullImage(String imageName, DockerClient client) {
