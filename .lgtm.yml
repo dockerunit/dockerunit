@@ -2,6 +2,5 @@ extraction:
   java:
     index:
       java_version: 8
-      xml_mode: ALL
       maven:
-        version: 3.6.1
+        version: 3.6.3
