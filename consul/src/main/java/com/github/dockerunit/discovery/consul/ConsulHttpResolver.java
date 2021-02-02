@@ -63,7 +63,7 @@ public class ConsulHttpResolver {
 		};
 
 		Timer timer = new Timer();
-		timer.schedule(discovery, initialDelayInSeconds * 1000);
+		timer.schedule(discovery, (long) initialDelayInSeconds * 1000);
 		return result.join();
 	}
 
@@ -95,7 +95,7 @@ public class ConsulHttpResolver {
 		};
 
 		Timer timer = new Timer("consul-polling-" + serviceName);
-		timer.scheduleAtFixedRate(repeatedTask, 0, pollingPeriodInSeconds * 1000);
+		timer.scheduleAtFixedRate(repeatedTask, 0, (long) pollingPeriodInSeconds * 1000);
 
 		result.exceptionally(ex -> {
 			throw new RuntimeException("Discovery/cleanup failed for svc " + serviceName);
