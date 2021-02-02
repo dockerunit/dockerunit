@@ -6,45 +6,18 @@
 
   <parent>
     <groupId>com.github.dockerunit</groupId>
-    <artifactId>dockerunit-parent</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
-    <relativePath/>
+    <artifactId>parent</artifactId>
+    <version>${revision}</version>
   </parent>
 
-  <artifactId>dockerunit-junit5</artifactId>
+  <artifactId>junit5</artifactId>
 
-  <description>Java Framework for testing of dockerised applications and services. Glue module for JUnit5</description>
-  <url>https://github.com/dockerunit/dockerunit-junit5</url>
-
-  <scm>
-    <connection>scm:https://github.com/dockerunit/dockerunit-junit5.git</connection>
-    <developerConnection>scm:https://github.com/dockerunit/dockerunit-junit5.git</developerConnection>
-    <url>https://github.com/dockerunit/dockerunit-junit5.git</url>
-  </scm>
-
-  <properties>
-    <lombok.version>1.18.8</lombok.version>
-    <junit.version>5.5.1</junit.version>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
-        <version>${junit.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  <description>Dockerunit JUnit 4 Integration Module</description>
 
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -61,16 +34,6 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>ossrh-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
 
   <build>
     <plugins>
