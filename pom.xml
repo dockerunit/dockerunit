@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
+
   <name>Dockerunit Parent Pom</name>
-  
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.dockerunit</groupId>
-  <artifactId>dockerunit-parent</artifactId>
+  <artifactId>parent</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
 
-  <description>Parent POM for dockerunit modules</description>
-  <url>https://github.com/dockerunit/dockerunit-parent</url>
+  <description>Dockerunit Parent Project</description>
+  <url>https://github.com/dockerunit/dockerunit</url>
+
   <licenses>
     <license>
       <name>The Apache License, Version 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
-  
+
   <developers>
     <developer>
       <id>qzagarese</id>
@@ -38,11 +39,18 @@
       <name>Francesco Sorice</name>
     </developer>
   </developers>
-  
+
+  <modules>
+    <module>core</module>
+    <module>consul</module>
+    <module>junit4</module>
+    <module>junit5</module>
+  </modules>
+
   <scm>
-    <connection>scm:https://github.com/dockerunit/dockerunit-parent.git</connection>
-    <developerConnection>scm:https://github.com/dockerunit/dockerunit-parent.git</developerConnection>
-    <url>https://github.com/dockerunit/dockerunit-parent.git</url>
+    <connection>scm:https://github.com/dockerunit/dockerunit.git</connection>
+    <developerConnection>scm:https://github.com/dockerunit/dockerunit.git</developerConnection>
+    <url>https://github.com/dockerunit/dockerunit.git</url>
   </scm>
 
   <distributionManagement>
@@ -64,41 +72,93 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
+    <!-- For reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+    <project.build.outputTimestamp>2020-01-01T00:00:00Z</project.build.outputTimestamp>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <jacoco.exec.datafile>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.exec.datafile>
-
-    <!-- Dependency Management -->
+    <!-- Dependencies -->
+    <lombok.version>1.18.16</lombok.version>
+    <docker-java.version>3.2.7</docker-java.version>
     <slf4j.version>1.7.30</slf4j.version>
+    <jackson.version>2.11.3</jackson.version>
+    <httpclient.version>4.5.12</httpclient.version>
+    <httpcore.version>4.4.13</httpcore.version>
+    <junit.version>5.5.1</junit.version>
 
     <!-- Maven Plugins -->
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
-    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
+    <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+    <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-    <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
-    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+    <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+    <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-    <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
+    <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
+    <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
 
     <!-- Other Plugins -->
-    <flatten-maven-plugin.version>1.2.1</flatten-maven-plugin.version>
+    <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
     <enforcer-extra-rules.version>1.3</enforcer-extra-rules.version>
-    <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
-    <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+    <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+
+    <!-- Enabled for Releases -->
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <maven.source.skip>true</maven.source.skip>
+
+    <jacoco.exec.datafile>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.exec.datafile>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- BOMs -->
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+      <!-- Docker Java -->
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java</artifactId>
+        <version>${docker-java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-core</artifactId>
+        <version>${docker-java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-api</artifactId>
+        <version>${docker-java.version}</version>
+      </dependency>
+
+      <!-- Logging -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -109,14 +169,39 @@
         <artifactId>jcl-over-slf4j</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${httpcore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${httpclient.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
-  <build>
+  <repositories>
+    <repository>
+      <id>ossrh-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
+  <build>
     <pluginManagement>
       <plugins>
-
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>${maven-clean-plugin.version}</version>
@@ -140,7 +225,7 @@
               </goals>
             </execution>
             <execution>
-              <id>flatten.clean</id>
+              <id>flatten-clean</id>
               <phase>clean</phase>
               <goals>
                 <goal>clean</goal>
@@ -194,13 +279,6 @@
                       <include>ch.qos.logback:*:*:*:test</include>
                     </includes>
                   </bannedDependencies>
-                  <requireFilesExist>
-                    <message>This project requires a 'LICENSE' and 'README.md' file in its root dir</message>
-                    <files>
-                      <file>${project.basedir}/LICENSE</file>
-                      <file>${project.basedir}/README.md</file>
-                    </files>
-                  </requireFilesExist>
 
                   <!-- Rules from org.codehaus.mojo:extra-enforcer-rules -->
                   <banCircularDependencies/>
@@ -409,7 +487,6 @@
           <artifactId>maven-site-plugin</artifactId>
           <version>${maven-site-plugin.version}</version>
         </plugin>
-
       </plugins>
     </pluginManagement>
 
@@ -435,7 +512,6 @@
         <artifactId>nexus-staging-maven-plugin</artifactId>
       </plugin>
     </plugins>
-
   </build>
 
   <profiles>
@@ -446,6 +522,14 @@
         <mdep.analyze.skip>true</mdep.analyze.skip>
         <maven.test.skip>true</maven.test.skip>
         <jacoco.skip>true</jacoco.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>release</id>
+      <properties>
+        <maven.source.skip>false</maven.source.skip>
+        <maven.javadoc.skip>false</maven.javadoc.skip>
+        <maven.install.skip>true</maven.install.skip>
       </properties>
     </profile>
   </profiles>
