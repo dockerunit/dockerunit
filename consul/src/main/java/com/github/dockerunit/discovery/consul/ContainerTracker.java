@@ -70,7 +70,7 @@ public class ContainerTracker {
             }
         };
         Timer timer = new Timer("Container " + containerId + " monitor");
-        timer.scheduleAtFixedRate(repeatedTask, 0, pollingPeriod * 1000);
+        timer.scheduleAtFixedRate(repeatedTask, 0, (long) pollingPeriod * 1000);
     }
 
 }
