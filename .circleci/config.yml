@@ -5,8 +5,8 @@ version: 2.1
 # -----------------------------------------------------------------------------
 
 _anchors:
-  - &mvn-cache-key          core-{{ .Branch }}-{{ checksum "pom.xml" }}
-  - &mvn-cache-key-fallback core-{{ .Branch }}
+  - &mvn-cache-key          mvn-cache-{{ .Branch }}-{{ checksum "pom.xml" }}
+  - &mvn-cache-key-fallback mvn-cache-{{ .Branch }}"
 
   - &build-image cimg/openjdk:8.0
 
@@ -32,8 +32,14 @@ jobs:
       - run: mvn verify
 
       - save_cache:
-          paths: [ ~/.m2 ]
           key: *mvn-cache-key
+          paths:
+            - ~/.m2
+            - target
+            - core/target
+            - consul/target
+            - junit4/target
+            - junit5/target
 
   # jobs: deploy --------------------------------------------------------------
 
@@ -43,7 +49,7 @@ jobs:
       - checkout
 
       - run:
-          name: Install GPG signing keys
+          name: GPG signing keys install
           environment:
             <<: *default-env
             GPG_KEY_FILENAME: codesigning.asc
@@ -60,11 +66,17 @@ jobs:
             <<: *default-env
           command: |
             export GPG_TTY=$(tty)
-            mvn -B -s ${MAVEN_CONFIG_DIR}/settings.xml -Dstyle.color=always -Dmaven.install.skip deploy
+            mvn -B -s ${MAVEN_CONFIG_DIR}/settings.xml -Dstyle.color=always deploy -P release
 
       - save_cache:
-          paths: [ ~/.m2 ]
           key: *mvn-cache-key
+          paths:
+            - ~/.m2
+            - target
+            - core/target
+            - consul/target
+            - junit4/target
+            - junit5/target
 
 
 # -----------------------------------------------------------------------------
@@ -93,4 +105,3 @@ workflows:
           filters:
             branches:
               only: master
-
