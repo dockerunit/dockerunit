@@ -15,7 +15,11 @@
   <description>Dockerunit JUnit 4 Integration Module</description>
 
   <properties>
+    <!-- Dependencies -->
     <junit4.version>4.13.1</junit4.version>
+
+    <!-- Config -->
+    <build.config.dir>${project.basedir}/../build</build.config.dir>
   </properties>
 
   <dependencies>

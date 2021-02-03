@@ -109,11 +109,11 @@
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 
-    <!-- Enabled for Releases -->
+    <!-- Config -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <maven.source.skip>true</maven.source.skip>
-
     <jacoco.exec.datafile>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.exec.datafile>
+    <build.config.dir>${project.basedir}/build</build.config.dir>
   </properties>
 
   <dependencyManagement>
@@ -481,6 +481,10 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
           <version>${versions-maven-plugin.version}</version>
+          <configuration>
+            <allowAnyUpdates>false</allowAnyUpdates>
+            <rulesUri>file://${build.config.dir}/versions/rules.xml</rulesUri>
+          </configuration>
         </plugin>
 
         <plugin>
