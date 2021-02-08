@@ -69,24 +69,28 @@ public class TestController {
                reqBody.write(dto.getBody());
            }
         }, res -> {
+            InputStream body = res.getBody();
+            if (body != null) {
+                writeBodyToResponse(response, body);
+            }
             return res;
         });
-        InputStream body = remoteResponse.getBody();
-        if (body != null) {
-            byte[] chunk = new byte[1024];
-            int read = body.read(chunk);
-            ServletOutputStream outputStream = response.getOutputStream();
-            while (read != -1) {
-                outputStream.write(chunk, 0, read);
-                read = body.read(chunk);
-            }
-            response.flushBuffer();
-        }
         response.setStatus(remoteResponse.getRawStatusCode());
         remoteResponse.getHeaders()
                 .toSingleValueMap()
                 .entrySet()
                 .forEach(e -> response.setHeader(e.getKey(), e.getValue()));
+    }
+
+    private void writeBodyToResponse(HttpServletResponse response, InputStream body) throws IOException {
+        byte[] chunk = new byte[1024];
+        int read = body.read(chunk);
+        ServletOutputStream outputStream = response.getOutputStream();
+        while (read != -1) {
+            outputStream.write(chunk, 0, read);
+            read = body.read(chunk);
+        }
+        response.flushBuffer();
     }
 
 }
