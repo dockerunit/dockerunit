@@ -45,6 +45,8 @@
     <module>consul</module>
     <module>junit4</module>
     <module>junit5</module>
+    <module>it-app</module>
+    <module>it-junit4</module>
   </modules>
 
   <scm>
@@ -85,14 +87,20 @@
     <jackson.version>2.11.4</jackson.version>
     <httpclient.version>4.5.13</httpclient.version>
     <httpcore.version>4.4.14</httpcore.version>
-    <junit.version>5.5.1</junit.version>
+    <junit5.version>5.5.1</junit5.version>
+    <junit4.version>4.13.1</junit4.version>
+    <spring-boot.version>2.4.2</spring-boot.version>
+    <springframework.version>5.3.3</springframework.version>
+    <tomcat-embed-core.version>9.0.41</tomcat-embed-core.version>
+    <rest-assured.version>4.2.0</rest-assured.version>
 
     <!-- Maven Plugins -->
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
     <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
     <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -108,6 +116,8 @@
     <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+    <docker-maven-plugin.version>0.34.1</docker-maven-plugin.version>
+
 
     <!-- Config -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
@@ -136,9 +146,29 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>${junit.version}</version>
+        <version>${junit5.version}</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+
+
+      <!-- JUnit 4 -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit4.version}</version>
+      </dependency>
+
+      <!-- RestAssured -->
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${rest-assured.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured-all</artifactId>
+        <version>${rest-assured.version}</version>
       </dependency>
 
       <!-- Docker Java -->
@@ -186,6 +216,75 @@
           </exclusion>
         </exclusions>
       </dependency>
+
+      <!-- Spring Boot -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring-boot.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${springframework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${springframework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${springframework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>${tomcat-embed-core.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>maven-plugin</type>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -321,6 +420,20 @@
             <threadCount>1</threadCount>
             <systemPropertiesFile>${project.basedir}/src/test/resources/system.properties</systemPropertiesFile>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe-plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>
@@ -475,6 +588,18 @@
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>${docker-maven-plugin.version}</version>
         </plugin>
 
         <plugin>
