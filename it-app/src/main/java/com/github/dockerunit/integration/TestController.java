@@ -78,8 +78,7 @@ public class TestController {
         response.setStatus(remoteResponse.getRawStatusCode());
         remoteResponse.getHeaders()
                 .toSingleValueMap()
-                .entrySet()
-                .forEach(e -> response.setHeader(e.getKey(), e.getValue()));
+                .forEach((key, value) -> response.setHeader(key, value));
     }
 
     private void writeBodyToResponse(HttpServletResponse response, InputStream body) throws IOException {

@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jre-11.0.10_9-alpine
+FROM azul/zulu-openjdk-alpine:11
 
 WORKDIR /usr/bin
 COPY target/dockerunit-test-app.jar .
