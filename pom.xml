@@ -47,6 +47,7 @@
     <module>junit5</module>
     <module>it-app</module>
     <module>it-junit4</module>
+    <module>it-junit5</module>
   </modules>
 
   <scm>
@@ -118,7 +119,6 @@
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <docker-maven-plugin.version>0.34.1</docker-maven-plugin.version>
 
-
     <!-- Config -->
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <maven.source.skip>true</maven.source.skip>
@@ -150,7 +150,6 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
-
 
       <!-- JUnit 4 -->
       <dependency>
@@ -267,7 +266,6 @@
         <artifactId>tomcat-embed-core</artifactId>
         <version>${tomcat-embed-core.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -284,7 +282,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
