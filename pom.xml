@@ -80,7 +80,7 @@
 
     <!-- Dependencies -->
     <lombok.version>1.18.18</lombok.version>
-    <docker-java.version>3.2.7</docker-java.version>
+    <docker-java.version>3.2.8</docker-java.version>
     <slf4j.version>1.7.30</slf4j.version>
     <jackson.version>2.11.4</jackson.version>
     <httpclient.version>4.5.13</httpclient.version>
