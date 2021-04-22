@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Dependencies -->
-    <junit4.version>4.13.1</junit4.version>
+    <junit4.version>4.13.2</junit4.version>
 
     <!-- Config -->
     <build.config.dir>${project.basedir}/../build</build.config.dir>
